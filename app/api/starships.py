@@ -7,6 +7,7 @@ import logging
 from app.models.starship import Starship
 from app.schemas.starship import StarshipSchema
 from app.services.database import get_db
+from app.utils.swapi_helpers import extract_swapi_id
 from app.services.swapi import SwapiService
 from app.utils.error_handling import (
     handle_external_api_error,
@@ -141,6 +142,8 @@ async def fetch_starships(db: AsyncSession = Depends(get_db)):
 
         # Store each starship in the database
         for starship_data in starships:
+            starship_data["swapi_id"] = extract_swapi_id(starship_data["url"])
+            
             # Check if starship already exists
             existing = await db.execute(
                 select(Starship).filter(Starship.swapi_id == starship_data["swapi_id"])

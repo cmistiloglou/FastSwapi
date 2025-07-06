@@ -8,6 +8,7 @@ from app.models.character import Character
 from app.schemas.character import CharacterSchema
 from app.services.database import get_db
 from app.services.swapi import SwapiService
+from app.utils.swapi_helpers import extract_swapi_id
 from app.utils.error_handling import (
     handle_external_api_error,
     DatabaseError,
@@ -143,6 +144,8 @@ async def fetch_characters(db: AsyncSession = Depends(get_db)):
 
         # Store each character in the database
         for char_data in characters:
+            char_data["swapi_id"] = extract_swapi_id(char_data["url"])
+
             # Check if character already exists
             existing = await db.execute(
                 select(Character).filter(Character.swapi_id == char_data["swapi_id"])

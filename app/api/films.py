@@ -7,6 +7,7 @@ import logging
 from app.models.film import Film
 from app.schemas.film import FilmSchema
 from app.services.database import get_db
+from app.utils.swapi_helpers import extract_swapi_id
 from app.services.swapi import SwapiService
 from app.utils.error_handling import (
     handle_external_api_error,
@@ -135,6 +136,8 @@ async def fetch_films(db: AsyncSession = Depends(get_db)):
 
         # Store each film in the database
         for film_data in films:
+            film_data["swapi_id"] = extract_swapi_id(film_data["url"])
+            
             # Check if film already exists
             existing = await db.execute(
                 select(Film).filter(Film.swapi_id == film_data["swapi_id"])
