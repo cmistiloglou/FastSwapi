@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 import logging
 
@@ -33,11 +34,14 @@ async def list_characters(db: AsyncSession = Depends(get_db)):
     - List of characters
     """
     try:
-        # Get all characters ordered by name
-        query = select(Character).order_by(Character.name)
+        # Eager load relationships
+        query = (
+            select(Character)
+            .order_by(Character.name)
+            .options(selectinload(Character.films), selectinload(Character.starships))
+        )
         result = await db.execute(query)
         characters = result.scalars().all()
-
         return characters
     except Exception as e:
         logger.error(f"Error retrieving characters: {str(e)}")
@@ -62,13 +66,13 @@ async def get_character(character_id: int, db: AsyncSession = Depends(get_db)):
     """
     try:
         result = await db.execute(
-            select(Character).filter(Character.id == character_id)
+            select(Character)
+            .filter(Character.id == character_id)
+            .options(selectinload(Character.films), selectinload(Character.starships))
         )
         character = result.scalar_one_or_none()
-
         if not character:
             raise NotFoundError(f"Character with ID {character_id} not found")
-
         return character
     except NotFoundError as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)
@@ -101,11 +105,10 @@ async def search_characters(
             select(Character)
             .filter(Character.name.ilike(f"%{name}%"))
             .order_by(Character.name)
+            .options(selectinload(Character.films), selectinload(Character.starships))
         )
-
         result = await db.execute(query)
         characters = result.scalars().all()
-
         return characters
     except Exception as e:
         logger.error(f"Error searching characters: {str(e)}")

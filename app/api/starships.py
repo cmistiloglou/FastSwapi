@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 import logging
 
@@ -33,8 +34,12 @@ async def list_starships(db: AsyncSession = Depends(get_db)):
     - List of starships
     """
     try:
-        # Get all starships ordered by name
-        query = select(Starship).order_by(Starship.name)
+        # Get all starships ordered by name with eager loading
+        query = (
+            select(Starship)
+            .order_by(Starship.name)
+            .options(selectinload(Starship.pilots))
+        )
         result = await db.execute(query)
         starships = result.scalars().all()
 
@@ -61,7 +66,11 @@ async def get_starship(starship_id: int, db: AsyncSession = Depends(get_db)):
     - Starship details including relationships to pilots
     """
     try:
-        result = await db.execute(select(Starship).filter(Starship.id == starship_id))
+        result = await db.execute(
+            select(Starship)
+            .filter(Starship.id == starship_id)
+            .options(selectinload(Starship.pilots))
+        )
         starship = result.scalar_one_or_none()
 
         if not starship:
@@ -99,6 +108,7 @@ async def search_starships(
             select(Starship)
             .filter(Starship.name.ilike(f"%{name}%"))
             .order_by(Starship.name)
+            .options(selectinload(Starship.pilots))
         )
 
         result = await db.execute(query)
@@ -143,7 +153,7 @@ async def fetch_starships(db: AsyncSession = Depends(get_db)):
         # Store each starship in the database
         for starship_data in starships:
             starship_data["swapi_id"] = extract_swapi_id(starship_data["url"])
-            
+
             # Check if starship already exists
             existing = await db.execute(
                 select(Starship).filter(Starship.swapi_id == starship_data["swapi_id"])

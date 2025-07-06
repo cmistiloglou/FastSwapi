@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 import logging
 
@@ -33,11 +34,9 @@ async def list_films(db: AsyncSession = Depends(get_db)):
     - List of films
     """
     try:
-        # Get all films ordered by title
-        query = select(Film).order_by(Film.title)
+        query = select(Film).order_by(Film.title).options(selectinload(Film.characters))
         result = await db.execute(query)
         films = result.scalars().all()
-
         return films
     except Exception as e:
         logger.error(f"Error retrieving films: {str(e)}")
@@ -61,7 +60,11 @@ async def get_film(film_id: int, db: AsyncSession = Depends(get_db)):
     - Film details including relationships to characters
     """
     try:
-        result = await db.execute(select(Film).filter(Film.id == film_id))
+        result = await db.execute(
+            select(Film)
+            .filter(Film.id == film_id)
+            .options(selectinload(Film.characters))
+        )
         film = result.scalar_one_or_none()
 
         if not film:
@@ -95,7 +98,12 @@ async def search_films(
     - List of films matching the search criteria
     """
     try:
-        query = select(Film).filter(Film.title.ilike(f"%{title}%")).order_by(Film.title)
+        query = (
+            select(Film)
+            .filter(Film.title.ilike(f"%{title}%"))
+            .order_by(Film.title)
+            .options(selectinload(Film.characters))
+        )
 
         result = await db.execute(query)
         films = result.scalars().all()
@@ -137,7 +145,7 @@ async def fetch_films(db: AsyncSession = Depends(get_db)):
         # Store each film in the database
         for film_data in films:
             film_data["swapi_id"] = extract_swapi_id(film_data["url"])
-            
+
             # Check if film already exists
             existing = await db.execute(
                 select(Film).filter(Film.swapi_id == film_data["swapi_id"])
