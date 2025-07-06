@@ -29,7 +29,7 @@ class StarshipSchema(BaseModel):
         ..., example="Starfighter", description="Starship class"
     )
     url: str = Field(
-        ..., example="https://swapi.dev/api/starships/12/", description="SWAPI URL"
+        ..., example="https://swapi.info/api/starships/12/", description="SWAPI URL"
     )
     swapi_id: int = Field(..., example=12, description="ID in SWAPI")
     votes: int = Field(0, example=30, description="Number of votes for this starship")
@@ -57,7 +57,7 @@ class StarshipSchema(BaseModel):
                 "hyperdrive_rating": "1.0",
                 "MGLT": "100",
                 "starship_class": "Starfighter",
-                "url": "https://swapi.dev/api/starships/12/",
+                "url": "https://swapi.info/api/starships/12/",
                 "swapi_id": 12,
                 "votes": 30,
                 "pilots": [1, 9],

@@ -18,10 +18,10 @@ class CharacterSchema(BaseModel):
     )
     gender: str = Field(..., example="male", description="Character gender")
     homeworld: str = Field(
-        ..., example="https://swapi.dev/api/planets/1/", description="URL of homeworld"
+        ..., example="https://swapi.info/api/planets/1/", description="URL of homeworld"
     )
     url: str = Field(
-        ..., example="https://swapi.dev/api/people/1/", description="SWAPI URL"
+        ..., example="https://swapi.info/api/people/1/", description="SWAPI URL"
     )
     swapi_id: int = Field(..., example=1, description="ID in SWAPI")
     votes: int = Field(0, example=42, description="Number of votes for this character")
@@ -47,8 +47,8 @@ class CharacterSchema(BaseModel):
                 "eye_color": "blue",
                 "birth_year": "19BBY",
                 "gender": "male",
-                "homeworld": "https://swapi.dev/api/planets/1/",
-                "url": "https://swapi.dev/api/people/1/",
+                "homeworld": "https://swapi.info/api/planets/1/",
+                "url": "https://swapi.info/api/people/1/",
                 "swapi_id": 1,
                 "votes": 42,
                 "films": [1, 2, 3],

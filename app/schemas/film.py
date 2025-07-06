@@ -18,7 +18,7 @@ class FilmSchema(BaseModel):
     )
     release_date: str = Field(..., example="1977-05-25", description="Release date")
     url: str = Field(
-        ..., example="https://swapi.dev/api/films/1/", description="SWAPI URL"
+        ..., example="https://swapi.info/api/films/1/", description="SWAPI URL"
     )
     swapi_id: int = Field(..., example=1, description="ID in SWAPI")
     votes: int = Field(0, example=50, description="Number of votes for this film")
@@ -39,7 +39,7 @@ class FilmSchema(BaseModel):
                 "director": "George Lucas",
                 "producer": "Gary Kurtz, Rick McCallum",
                 "release_date": "1977-05-25",
-                "url": "https://swapi.dev/api/films/1/",
+                "url": "https://swapi.info/api/films/1/",
                 "swapi_id": 1,
                 "votes": 50,
                 "characters": [1, 2, 3],
