@@ -1,0 +1,9 @@
+services:
+
+  fastswapi:
+    ports:
+      - "8000:8000"
+      - "5678:5678"
+    volumes:
+      - app:/app
+    command: [ "sh", "-c", "pip install debugpy --root-user-action=ignore && python -Xfrozen_modules=off -m debugpy --listen 0.0.0.0:5678 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload" ]
