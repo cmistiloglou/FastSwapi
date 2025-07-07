@@ -6,9 +6,15 @@ class VoteSchema(BaseModel):
     """Schema for voting on Star Wars entities"""
 
     entity_type: Literal["character", "film", "starship"] = Field(
-        ..., description="Type of entity to vote for", example="character"
+        ...,
+        description="Type of entity to vote for",
+        json_schema_extra={"example": "character"},
     )
-    entity_id: int = Field(..., description="ID of the entity to vote for", example=1)
+    entity_id: int = Field(
+        ...,
+        description="ID of the entity to vote for",
+        json_schema_extra={"example": 1},
+    )
 
-    class Config:
+    class ConfigDict:
         json_schema_extra = {"example": {"entity_type": "character", "entity_id": 1}}

@@ -6,29 +6,53 @@ class FilmSchema(BaseModel):
     """Schema for Star Wars film data"""
 
     # Regular fields
-    id: Optional[int] = Field(None, example=1, description="Database ID")
-    title: str = Field(..., example="A New Hope", description="Film title")
-    episode_id: int = Field(..., example=4, description="Episode number")
+    id: Optional[int] = Field(
+        None, description="Database ID", json_schema_extra={"example": 1}
+    )
+    title: str = Field(
+        ..., description="Film title", json_schema_extra={"example": "A New Hope"}
+    )
+    episode_id: int = Field(
+        ..., description="Episode number", json_schema_extra={"example": 4}
+    )
     opening_crawl: str = Field(
-        ..., example="It is a period of civil war...", description="Opening crawl text"
+        ...,
+        description="Opening crawl text",
+        json_schema_extra={"example": "It is a period of civil war..."},
     )
-    director: str = Field(..., example="George Lucas", description="Film director")
+    director: str = Field(
+        ..., description="Film director", json_schema_extra={"example": "George Lucas"}
+    )
     producer: str = Field(
-        ..., example="Gary Kurtz, Rick McCallum", description="Film producer"
+        ...,
+        description="Film producer",
+        json_schema_extra={"example": "Gary Kurtz, Rick McCallum"},
     )
-    release_date: str = Field(..., example="1977-05-25", description="Release date")
+    release_date: str = Field(
+        ..., description="Release date", json_schema_extra={"example": "1977-05-25"}
+    )
     url: str = Field(
-        ..., example="https://swapi.info/api/films/1/", description="SWAPI URL"
+        ...,
+        description="SWAPI URL",
+        json_schema_extra={"example": "https://swapi.info/api/films/1/"},
     )
-    swapi_id: int = Field(..., example=1, description="ID in SWAPI")
-    votes: int = Field(0, example=50, description="Number of votes for this film")
+    swapi_id: int = Field(
+        ..., description="ID in SWAPI", json_schema_extra={"example": 1}
+    )
+    votes: int = Field(
+        0,
+        description="Number of votes for this film",
+        json_schema_extra={"example": 50},
+    )
 
     # Optional relationship fields
     characters: Optional[List[int]] = Field(
-        None, example=[1, 2, 3], description="List of character IDs"
+        None,
+        description="List of character IDs",
+        json_schema_extra={"example": [1, 2, 3]},
     )
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
         json_schema_extra = {
             "example": {

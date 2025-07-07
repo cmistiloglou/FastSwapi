@@ -6,40 +6,72 @@ class StarshipSchema(BaseModel):
     """Schema for Star Wars starship data"""
 
     # Regular fields
-    id: Optional[int] = Field(None, example=1, description="Database ID")
-    name: str = Field(..., example="X-wing", description="Starship name")
-    model: str = Field(..., example="T-65 X-wing", description="Starship model")
+    id: Optional[int] = Field(
+        None, description="Database ID", json_schema_extra={"example": 1}
+    )
+    name: str = Field(
+        ..., description="Starship name", json_schema_extra={"example": "X-wing"}
+    )
+    model: str = Field(
+        ..., description="Starship model", json_schema_extra={"example": "T-65 X-wing"}
+    )
     manufacturer: str = Field(
-        ..., example="Incom Corporation", description="Manufacturer"
+        ...,
+        description="Manufacturer",
+        json_schema_extra={"example": "Incom Corporation"},
     )
-    cost_in_credits: str = Field(..., example="149999", description="Cost in credits")
-    length: str = Field(..., example="12.5", description="Length in meters")
+    cost_in_credits: str = Field(
+        ..., description="Cost in credits", json_schema_extra={"example": "149999"}
+    )
+    length: str = Field(
+        ..., description="Length in meters", json_schema_extra={"example": "12.5"}
+    )
     max_atmosphering_speed: str = Field(
-        ..., example="1050", description="Maximum atmosphering speed"
+        ...,
+        description="Maximum atmosphering speed",
+        json_schema_extra={"example": "1050"},
     )
-    crew: str = Field(..., example="1", description="Crew size")
-    passengers: str = Field(..., example="0", description="Passenger capacity")
-    cargo_capacity: str = Field(..., example="110", description="Cargo capacity in kg")
+    crew: str = Field(..., description="Crew size", json_schema_extra={"example": "1"})
+    passengers: str = Field(
+        ..., description="Passenger capacity", json_schema_extra={"example": "0"}
+    )
+    cargo_capacity: str = Field(
+        ..., description="Cargo capacity in kg", json_schema_extra={"example": "110"}
+    )
     consumables: str = Field(
-        ..., example="1 week", description="Consumable supplies duration"
+        ...,
+        description="Consumable supplies duration",
+        json_schema_extra={"example": "1 week"},
     )
-    hyperdrive_rating: str = Field(..., example="1.0", description="Hyperdrive rating")
-    MGLT: str = Field(..., example="100", description="Megalights per hour")
+    hyperdrive_rating: str = Field(
+        ..., description="Hyperdrive rating", json_schema_extra={"example": "1.0"}
+    )
+    MGLT: str = Field(
+        ..., description="Megalights per hour", json_schema_extra={"example": "100"}
+    )
     starship_class: str = Field(
-        ..., example="Starfighter", description="Starship class"
+        ..., description="Starship class", json_schema_extra={"example": "Starfighter"}
     )
     url: str = Field(
-        ..., example="https://swapi.info/api/starships/12/", description="SWAPI URL"
+        ...,
+        description="SWAPI URL",
+        json_schema_extra={"example": "https://swapi.info/api/starships/12/"},
     )
-    swapi_id: int = Field(..., example=12, description="ID in SWAPI")
-    votes: int = Field(0, example=30, description="Number of votes for this starship")
+    swapi_id: int = Field(
+        ..., description="ID in SWAPI", json_schema_extra={"example": 12}
+    )
+    votes: int = Field(
+        0,
+        description="Number of votes for this starship",
+        json_schema_extra={"example": 30},
+    )
 
     # Optional relationship fields
     pilots: Optional[List[int]] = Field(
-        None, example=[1, 9], description="List of pilot IDs"
+        None, description="List of pilot IDs", json_schema_extra={"example": [1, 9]}
     )
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
         json_schema_extra = {
             "example": {
